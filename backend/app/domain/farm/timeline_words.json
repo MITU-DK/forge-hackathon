@@ -1,0 +1,59 @@
+{
+ "en": {
+  "tasks": {
+   "SPRAY": "Spray, best hours {start} to {end}",
+   "PROTECT": "Protect the crop before heavy rain ({mm} mm on {rain_day})",
+   "SKIP_IRRIGATION": "No irrigation (rain {mm} mm)",
+   "HARVEST_WINDOW": "Harvest window opens (until {until})"
+  },
+  "short": {
+   "SPRAY": "spraying",
+   "PROTECT": "crop protection",
+   "SKIP_IRRIGATION": "skipping irrigation",
+   "HARVEST_WINDOW": "the harvest window"
+  },
+  "MOVED": "Moved {task} from {from} to {to}{why}.",
+  "DROPPED": "Dropped {task} on {from}{why}.",
+  "ADDED": "Added {task} on {to}{why}.",
+  "RAIN_ADDED": " because {mm} mm of rain is now forecast on {rain_on}",
+  "FORECAST": " because the forecast changed"
+ },
+ "hi": {
+  "tasks": {
+   "SPRAY": "छिड़काव, सबसे अच्छे घंटे {start} से {end}",
+   "PROTECT": "भारी बारिश से पहले फसल बचाएँ ({rain_day} को {mm} मिमी)",
+   "SKIP_IRRIGATION": "सिंचाई नहीं (बारिश {mm} मिमी)",
+   "HARVEST_WINDOW": "कटाई की अवधि शुरू (तक {until})"
+  },
+  "short": {
+   "SPRAY": "छिड़काव",
+   "PROTECT": "फसल की सुरक्षा",
+   "SKIP_IRRIGATION": "सिंचाई छोड़ना",
+   "HARVEST_WINDOW": "कटाई की अवधि"
+  },
+  "MOVED": "{task} {from} से {to} पर किया{why}।",
+  "DROPPED": "{from} का {task} हटाया{why}।",
+  "ADDED": "{to} पर {task} जोड़ा{why}।",
+  "RAIN_ADDED": ", क्योंकि {rain_on} को अब {mm} मिमी बारिश का अनुमान है",
+  "FORECAST": ", क्योंकि पूर्वानुमान बदल गया"
+ },
+ "mr": {
+  "tasks": {
+   "SPRAY": "फवारणी, सर्वोत्तम वेळ {start} ते {end}",
+   "PROTECT": "जोरदार पावसापूर्वी पीक सांभाळा ({rain_day} रोजी {mm} मिमी)",
+   "SKIP_IRRIGATION": "पाणी देऊ नका (पाऊस {mm} मिमी)",
+   "HARVEST_WINDOW": "काढणीचा काळ सुरू (पर्यंत {until})"
+  },
+  "short": {
+   "SPRAY": "फवारणी",
+   "PROTECT": "पीक संरक्षण",
+   "SKIP_IRRIGATION": "पाणी न देणे",
+   "HARVEST_WINDOW": "काढणीचा काळ"
+  },
+  "MOVED": "{task} {from} वरून {to} रोजी हलवले{why}.",
+  "DROPPED": "{from} रोजीचे {task} काढले{why}.",
+  "ADDED": "{to} रोजी {task} जोडले{why}.",
+  "RAIN_ADDED": ", कारण {rain_on} रोजी आता {mm} मिमी पावसाचा अंदाज आहे",
+  "FORECAST": ", कारण अंदाज बदलला"
+ }
+}
