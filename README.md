@@ -7,7 +7,7 @@
 ![Python 3.11](https://img.shields.io/badge/python-3.11-blue)
 ![React 18](https://img.shields.io/badge/react-18-61dafb)
 
-**[Live app](https://kisaanmitra-x9ct.onrender.com)** · **Demo video: TODO** · FORGE '26 Gen-AI Buildathon, Theme 2 (Climate, Resource Infrastructure & Global Supply Resilience), Problem 1: Multilingual Agritech & Resource Advisory Assistant
+**[Live app](https://kisaanmitra-x9ct.onrender.com)** · **[Demo video](https://youtu.be/ZnKHyeejxNg)** · FORGE '26 Gen-AI Buildathon, Theme 2 (Climate, Resource Infrastructure & Global Supply Resilience), Problem 1: Multilingual Agritech & Resource Advisory Assistant
 
 ![KisaanMitra answering a live question for Nashik onions, with the agent trace](assets/screenshot.png)
 _A real run on 31 Oct 2026 (Nashik, onion): the answer, its sources with dates, the price card and the live agent trace._
