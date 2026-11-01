@@ -606,3 +606,16 @@ def test_raw_source_view_returns_the_clipped_real_answer_and_only_for_fetched_ur
     r = c.get("/api/raw", params={"url": f.url})
     assert r.status_code == 200 and r.json()["clipped"] and "SECRET123" not in r.text and r.json()["fetched_at"] == f.fetched_at
     assert c.get("/api/raw", params={"url": "https://evil.example/x"}).status_code == 404
+
+
+def test_mandi_proxy_url_is_used_only_when_set(monkeypatch):
+    import app.tools.mandi as mandi
+    from app.core.config import get_settings
+
+    monkeypatch.setenv("MANDI_BASE_URL", "")
+    get_settings.cache_clear()
+    assert mandi._api("abc").startswith("https://api.data.gov.in/resource/")
+    monkeypatch.setenv("MANDI_BASE_URL", "https://x.example.workers.dev/")
+    get_settings.cache_clear()
+    assert mandi._api("abc") == "https://x.example.workers.dev/resource/abc"
+    get_settings.cache_clear()
