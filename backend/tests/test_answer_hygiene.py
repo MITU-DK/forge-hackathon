@@ -27,6 +27,8 @@ def flagged(answer: str) -> bool:
     "Prices are steady (3.7 %), so there is no clear rise expected next week.",  # an implied forecast
     "Onion prices will likely go up if the rain continues.",
     "Your market today: Dindori Rs 4000 per quintal.",  # CTX has no YOUR MARKET line
+    "आज नाशिक का भाव Rs 4000 है (कोड‑गणना, 2026-10-31).",  # an internal part named as a source, in Hindi
+    "आजचा भाव Rs 4000 आहे (स्रोत: कोड गणना).",
 ])
 def test_leaks_are_rejected(bad):
     assert flagged(bad), bad
