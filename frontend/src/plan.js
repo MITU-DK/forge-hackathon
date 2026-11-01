@@ -1,0 +1,138 @@
+// Words for the "Today" screen. The backend sends a rule code plus numbers; the sentence is built here, in the farmer's language.
+// A code without a template here falls back to the backend's English title, so a new rule can never show a blank row.
+// NOTE: Hindi/Marathi wording needs a native-speaker read-through before the demo.
+import { BCP47, cropLabel } from "./i18n.js";
+
+const day = (iso, lang) => {
+  try { return new Date(iso).toLocaleDateString(BCP47[lang] || "en-IN", { weekday: "short", day: "numeric", month: "short" }); } catch { return iso; }
+};
+const fill = (s, v) => s.replace(/\{(\w+)\}/g, (_, k) => (v[k] ?? ""));
+
+const en = {
+  HEAVY_RAIN: "{what} forecast on {day}: {value} {unit}", HEAT_STRESS: "{what} forecast on {day}: {value} {unit}", COLD_STRESS: "{what} forecast on {day}: {value} {unit}",
+  WATERLOGGING_RISK: "Waterlogging risk: {past7} mm fell in 7 days and {next3} mm is due in 3 days",
+  IRRIGATION_URGENT: "Very little rain in 14 days ({past14} mm): check soil moisture and irrigate if dry",
+  DRY_SPELL_ALERT: "Dry spell: {past7} mm in the past 7 days and {next7} mm forecast for the next 7",
+  SKIP_IRRIGATION: "Skip irrigation: {mm} mm of rain expected in the next 48 hours",
+  IRRIGATE_IF_SOIL_DRY: "No big rain in the next 48 hours ({mm} mm): irrigate if the soil feels dry",
+  SPRAY_WINDOW: "Spray-safe days this week: {days}. Best hours: {hours}", NO_SPRAY_WINDOW: "No spray-safe day this week (wind or rain chance too high)",
+  HOLD: "{crop} prices have been rising: {pct} % in {days} days (a recent trend, not a forecast)",
+  SELL_NOW: "{crop} prices have been falling: {pct} % in {days} days (a recent trend, not a forecast)",
+  NEUTRAL: "{crop} prices show no clear rise or fall this week",
+  ABOVE_STATE_MEDIAN: "Your district's mandi price is {pct} % {dir} the state median ({median} Rs/quintal); best market in the state: {market} at {best} Rs/quintal",
+  BELOW_STATE_MEDIAN: "Your district's mandi price is {pct} % {dir} the state median ({median} Rs/quintal); best market in the state: {market} at {best} Rs/quintal",
+  NEAR_STATE_MEDIAN: "Your district's mandi price is {pct} % {dir} the state median ({median} Rs/quintal); best market in the state: {market} at {best} Rs/quintal",
+  dir: { above: "above", below: "below" },
+  SELL_BEFORE_RAIN: "{value} mm of heavy rain is forecast on {day}. Rain can damage stored produce, so selling before the rain is worth considering.",
+  STORAGE_RISK: "{value} mm of heavy rain is forecast on {day}. Protect stored produce, or consider selling early.",
+  TOMATO_HEAT_FRUIT_SET: "Forecast max {tmax} °C on {day} ({n} day(s) above {limit} °C): temperatures above {limit} °C harm tomato fruit set and development.",
+  TOMATO_COLD: "Forecast min {tmin} °C on {day} ({n} day(s) below {limit} °C): temperatures below {limit} °C harm tomato plant tissue.",
+  WHEAT_SOWING_WINDOW_OPEN: "Today is inside the recommended wheat sowing window (25 October to 15 November). Early sowing avoids terminal heat stress.",
+  WHEAT_SOWING_LATE: "The recommended wheat sowing window (25 October to 15 November) has passed. Late-sown wheat faces more temperature stress.",
+  WHEAT_TERMINAL_HEAT: "Forecast mean temperature {mean} °C on {day} is above {limit} °C, the level at which terminal heat stress occurs during grain filling.",
+  checks: { weather: "the weather forecast", rain: "the rain history", market: "the mandi prices", weather_needs_crop: "the weather forecast", rain_needs_crop: "the rain history", market_needs_crop: "the mandi prices (choose a crop first)" },
+  offline: "OFFLINE: no connection to the server. This is the last plan this phone saw, from",
+  badPlace: "We could not find that place. Try the nearest bigger town or the district name.", timeline: "Your next 7 days", replanned: "Plan changed", skipped: "Not checked", why: "Why", since: "Since you last looked", changed: "What changed", all: "All actions", top: "Today's top actions", updated: "Updated", askPlan: "Explain this plan", needPlace: "Choose your place above to see today's plan.", unavailable: "Today's plan is not available right now: the live sources could not be reached.", loading: "Checking live weather, rain and prices…", refresh: "Refresh", noActions: "Nothing needs action today based on the data that could be read.",
+  c: {
+    NEW_RISK: "New: {what} forecast on {day}", RISK_GONE: "No longer forecast: {what} on {day}", RAIN_CHANGED: "Rain expected in the next 48 hours changed from {old} mm to {new} mm",
+    NEW_ALERT: "New alert: {alert}", PRICE_CHANGED: "Latest mandi price moved {pct} % ({old} to {new} Rs/quintal)", SIGNAL_CHANGED: "Price signal changed from {old} to {new}",
+    SPRAY_WINDOW_LOST: "The spray-safe days are gone from this week's forecast", SPRAY_WINDOW_OPENED: "Spray-safe days appeared: {days} days this week",
+  },
+  ask: [["📅", "calendar", "When to sow and harvest my crop?"], ["🏪", "market", "Which market nearby pays the most?"], ["🧴", "spray", "When is the best time to spray this week?"], ["💧", "irrigation", "Do I need to irrigate this week?"]],
+  askLabel: { calendar: "Crop calendar", market: "Best market", spray: "Spray hours", irrigation: "Irrigation" },
+  sig: { HOLD: "hold", SELL_NOW: "sell now", NEUTRAL: "no clear signal", INSUFFICIENT_DATA: "not enough data" },
+  cat: { WEATHER_RISK: "⛈", WATER: "💧", SPRAY: "🧴", CROP_RULE: "🌱", MARKET: "💰" },
+};
+
+const hi = {
+  HEAVY_RAIN: "{day} को {what} का अनुमान: {value} {unit}", HEAT_STRESS: "{day} को {what} का अनुमान: {value} {unit}", COLD_STRESS: "{day} को {what} का अनुमान: {value} {unit}",
+  WATERLOGGING_RISK: "जलभराव का खतरा: 7 दिन में {past7} mm बारिश हुई और 3 दिन में {next3} mm आने वाली है",
+  IRRIGATION_URGENT: "14 दिन में बहुत कम बारिश ({past14} mm): मिट्टी की नमी देखें, सूखी हो तो सिंचाई करें",
+  DRY_SPELL_ALERT: "सूखे का दौर: पिछले 7 दिन में {past7} mm और अगले 7 दिन में {next7} mm बारिश का अनुमान",
+  SKIP_IRRIGATION: "सिंचाई न करें: अगले 48 घंटे में {mm} mm बारिश आने वाली है",
+  IRRIGATE_IF_SOIL_DRY: "अगले 48 घंटे में बड़ी बारिश नहीं ({mm} mm): मिट्टी सूखी लगे तो सिंचाई करें",
+  SPRAY_WINDOW: "इस हफ्ते छिड़काव के लिए सुरक्षित दिन: {days}। सबसे अच्छे घंटे: {hours}", NO_SPRAY_WINDOW: "इस हफ्ते छिड़काव के लिए कोई सुरक्षित दिन नहीं (हवा या बारिश की संभावना ज़्यादा)",
+  HOLD: "{crop} के भाव बढ़ रहे हैं: {days} दिन में {pct} % (हाल का रुझान, पूर्वानुमान नहीं)",
+  SELL_NOW: "{crop} के भाव गिर रहे हैं: {days} दिन में {pct} % (हाल का रुझान, पूर्वानुमान नहीं)",
+  NEUTRAL: "{crop} के भाव इस हफ्ते न साफ बढ़े न घटे",
+  ABOVE_STATE_MEDIAN: "आपके ज़िले का मंडी भाव राज्य के मध्यमान ({median} रुपये/क्विंटल) से {pct} % {dir}; राज्य में सबसे ऊँचा भाव: {market}, {best} रुपये/क्विंटल",
+  BELOW_STATE_MEDIAN: "आपके ज़िले का मंडी भाव राज्य के मध्यमान ({median} रुपये/क्विंटल) से {pct} % {dir}; राज्य में सबसे ऊँचा भाव: {market}, {best} रुपये/क्विंटल",
+  NEAR_STATE_MEDIAN: "आपके ज़िले का मंडी भाव राज्य के मध्यमान ({median} रुपये/क्विंटल) के आसपास ({pct} % {dir}); राज्य में सबसे ऊँचा भाव: {market}, {best} रुपये/क्विंटल",
+  dir: { above: "ऊपर", below: "नीचे" },
+  SELL_BEFORE_RAIN: "{day} को {value} mm भारी बारिश का अनुमान है। बारिश से रखा हुआ माल खराब हो सकता है, इसलिए बारिश से पहले बेचने पर विचार करें।",
+  STORAGE_RISK: "{day} को {value} mm भारी बारिश का अनुमान है। रखे हुए माल को बचाएँ, या जल्दी बेचने पर विचार करें।",
+  TOMATO_HEAT_FRUIT_SET: "{day} को अधिकतम तापमान {tmax} °C का अनुमान ({n} दिन {limit} °C से ऊपर): {limit} °C से ऊपर का तापमान टमाटर के फल लगने और बढ़ने को नुकसान पहुँचाता है।",
+  TOMATO_COLD: "{day} को न्यूनतम तापमान {tmin} °C का अनुमान ({n} दिन {limit} °C से नीचे): {limit} °C से नीचे का तापमान टमाटर के पौधे के ऊतकों को नुकसान पहुँचाता है।",
+  WHEAT_SOWING_WINDOW_OPEN: "आज गेहूँ की सुझाई गई बुवाई अवधि (25 अक्टूबर से 15 नवंबर) के भीतर है। जल्दी बुवाई से अंतिम चरण की गर्मी के तनाव से बचाव होता है।",
+  WHEAT_SOWING_LATE: "गेहूँ की सुझाई गई बुवाई अवधि (25 अक्टूबर से 15 नवंबर) निकल चुकी है। देर से बोए गेहूँ पर तापमान का तनाव ज़्यादा पड़ता है।",
+  WHEAT_TERMINAL_HEAT: "{day} को औसत तापमान {mean} °C का अनुमान है, जो {limit} °C से ऊपर है; दाना भरते समय इस स्तर पर अंतिम चरण का गर्मी तनाव होता है।",
+  checks: { weather: "मौसम का पूर्वानुमान", rain: "बारिश का इतिहास", market: "मंडी भाव", weather_needs_crop: "मौसम का पूर्वानुमान", rain_needs_crop: "बारिश का इतिहास", market_needs_crop: "मंडी भाव (पहले फसल चुनें)" },
+  offline: "ऑफ़लाइन: सर्वर से संपर्क नहीं। यह इस फ़ोन पर आखिरी बार देखी गई योजना है, समय",
+  badPlace: "यह जगह नहीं मिली। पास का बड़ा शहर या ज़िले का नाम आज़माएँ।", timeline: "आपके अगले 7 दिन", replanned: "योजना बदली", skipped: "जाँचा नहीं गया", why: "क्यों", since: "पिछली बार देखने के बाद", changed: "क्या बदला", all: "सभी काम", top: "आज के मुख्य काम", updated: "अपडेट", askPlan: "इस योजना को समझाएँ", needPlace: "आज की योजना देखने के लिए ऊपर अपनी जगह चुनें।", unavailable: "आज की योजना अभी उपलब्ध नहीं: लाइव स्रोत नहीं मिल सके।", loading: "ताज़ा मौसम, बारिश और भाव देख रहे हैं…", refresh: "फिर देखें", noActions: "पढ़े जा सके आंकड़ों के हिसाब से आज कोई काम ज़रूरी नहीं।",
+  c: {
+    NEW_RISK: "नया: {day} को {what} का अनुमान", RISK_GONE: "अब अनुमान नहीं: {day} को {what}", RAIN_CHANGED: "अगले 48 घंटे की बारिश {old} mm से बदलकर {new} mm हुई",
+    NEW_ALERT: "नई चेतावनी: {alert}", PRICE_CHANGED: "ताज़ा मंडी भाव {pct} % बदला ({old} से {new} रुपये/क्विंटल)", SIGNAL_CHANGED: "भाव का संकेत {old} से {new} हुआ",
+    SPRAY_WINDOW_LOST: "इस हफ्ते के अनुमान में छिड़काव के सुरक्षित दिन नहीं रहे", SPRAY_WINDOW_OPENED: "छिड़काव के सुरक्षित दिन दिखे: इस हफ्ते {days} दिन",
+  },
+  ask: [["📅", "calendar", "कब बोएं और कब काटें?"], ["🏪", "market", "पास में कौन सी मंडी सबसे ज़्यादा भाव देती है?"], ["🧴", "spray", "इस हफ्ते छिड़काव का सबसे अच्छा समय क्या है?"], ["💧", "irrigation", "क्या इस हफ्ते सिंचाई करनी चाहिए?"]],
+  askLabel: { calendar: "फसल कैलेंडर", market: "सबसे अच्छी मंडी", spray: "छिड़काव के घंटे", irrigation: "सिंचाई" },
+  sig: { HOLD: "रुकें", SELL_NOW: "अभी बेचें", NEUTRAL: "कोई साफ संकेत नहीं", INSUFFICIENT_DATA: "आंकड़े कम" },
+};
+
+const mr = {
+  HEAVY_RAIN: "{day} रोजी {what} अपेक्षित: {value} {unit}", HEAT_STRESS: "{day} रोजी {what} अपेक्षित: {value} {unit}", COLD_STRESS: "{day} रोजी {what} अपेक्षित: {value} {unit}",
+  WATERLOGGING_RISK: "पाणी साचण्याचा धोका: 7 दिवसांत {past7} mm पाऊस पडला आणि 3 दिवसांत {next3} mm येणार आहे",
+  IRRIGATION_URGENT: "14 दिवसांत खूप कमी पाऊस ({past14} mm): मातीतील ओलावा तपासा, कोरडी असेल तर सिंचन करा",
+  DRY_SPELL_ALERT: "कोरडा काळ: मागील 7 दिवसांत {past7} mm आणि पुढील 7 दिवसांत {next7} mm पावसाचा अंदाज",
+  SKIP_IRRIGATION: "सिंचन करू नका: पुढील 48 तासांत {mm} mm पाऊस अपेक्षित",
+  IRRIGATE_IF_SOIL_DRY: "पुढील 48 तासांत मोठा पाऊस नाही ({mm} mm): माती कोरडी वाटल्यास सिंचन करा",
+  SPRAY_WINDOW: "या आठवड्यात फवारणीसाठी सुरक्षित दिवस: {days}. सर्वोत्तम तास: {hours}", NO_SPRAY_WINDOW: "या आठवड्यात फवारणीसाठी सुरक्षित दिवस नाही (वारा किंवा पावसाची शक्यता जास्त)",
+  HOLD: "{crop} भाव वाढत आहेत: {days} दिवसांत {pct} % (अलीकडचा कल, अंदाज नाही)",
+  SELL_NOW: "{crop} भाव घसरत आहेत: {days} दिवसांत {pct} % (अलीकडचा कल, अंदाज नाही)",
+  NEUTRAL: "{crop} भाव या आठवड्यात स्पष्टपणे वाढले किंवा घटले नाहीत",
+  ABOVE_STATE_MEDIAN: "तुमच्या जिल्ह्याचा बाजारभाव राज्याच्या सरासरीपेक्षा ({median} रुपये/क्विंटल) {pct} % {dir}; राज्यातील सर्वात जास्त भाव: {market}, {best} रुपये/क्विंटल",
+  BELOW_STATE_MEDIAN: "तुमच्या जिल्ह्याचा बाजारभाव राज्याच्या सरासरीपेक्षा ({median} रुपये/क्विंटल) {pct} % {dir}; राज्यातील सर्वात जास्त भाव: {market}, {best} रुपये/क्विंटल",
+  NEAR_STATE_MEDIAN: "तुमच्या जिल्ह्याचा बाजारभाव राज्याच्या सरासरीच्या ({median} रुपये/क्विंटल) जवळ ({pct} % {dir}); राज्यातील सर्वात जास्त भाव: {market}, {best} रुपये/क्विंटल",
+  dir: { above: "जास्त", below: "कमी" },
+  SELL_BEFORE_RAIN: "{day} रोजी {value} mm मुसळधार पावसाचा अंदाज आहे. पावसाने साठवलेला माल खराब होऊ शकतो, म्हणून पावसापूर्वी विकण्याचा विचार करा.",
+  STORAGE_RISK: "{day} रोजी {value} mm मुसळधार पावसाचा अंदाज आहे. साठवलेला माल जपा, किंवा लवकर विकण्याचा विचार करा.",
+  TOMATO_HEAT_FRUIT_SET: "{day} रोजी कमाल तापमान {tmax} °C अपेक्षित ({n} दिवस {limit} °C पेक्षा जास्त): {limit} °C पेक्षा जास्त तापमान टोमॅटोच्या फळधारणेला आणि वाढीला हानिकारक आहे.",
+  TOMATO_COLD: "{day} रोजी किमान तापमान {tmin} °C अपेक्षित ({n} दिवस {limit} °C पेक्षा कमी): {limit} °C पेक्षा कमी तापमान टोमॅटोच्या रोपाच्या पेशींना हानिकारक आहे.",
+  WHEAT_SOWING_WINDOW_OPEN: "आज गव्हाच्या शिफारस केलेल्या पेरणी कालावधीत (25 ऑक्टोबर ते 15 नोव्हेंबर) आहे. लवकर पेरणीने शेवटच्या टप्प्यातील उष्णतेच्या ताणापासून बचाव होतो.",
+  WHEAT_SOWING_LATE: "गव्हाचा शिफारस केलेला पेरणी कालावधी (25 ऑक्टोबर ते 15 नोव्हेंबर) संपला आहे. उशिरा पेरलेल्या गव्हावर तापमानाचा ताण जास्त येतो.",
+  WHEAT_TERMINAL_HEAT: "{day} रोजी सरासरी तापमान {mean} °C अपेक्षित आहे, जे {limit} °C पेक्षा जास्त आहे; दाणे भरताना या पातळीवर शेवटच्या टप्प्यातील उष्णतेचा ताण येतो.",
+  checks: { weather: "हवामानाचा अंदाज", rain: "पावसाचा इतिहास", market: "बाजारभाव", weather_needs_crop: "हवामानाचा अंदाज", rain_needs_crop: "पावसाचा इतिहास", market_needs_crop: "बाजारभाव (आधी पीक निवडा)" },
+  offline: "ऑफलाइन: सर्व्हरशी संपर्क नाही. ही या फोनवर शेवटी पाहिलेली योजना आहे, वेळ",
+  badPlace: "ही जागा सापडली नाही. जवळचे मोठे शहर किंवा जिल्ह्याचे नाव वापरून पहा.", timeline: "तुमचे पुढील 7 दिवस", replanned: "योजना बदलली", skipped: "तपासले नाही", why: "का", since: "मागील वेळी पाहिल्यानंतर", changed: "काय बदलले", all: "सर्व कामे", top: "आजची मुख्य कामे", updated: "अपडेट", askPlan: "ही योजना समजावून सांगा", needPlace: "आजची योजना पाहण्यासाठी वर तुमची जागा निवडा.", unavailable: "आजची योजना आत्ता उपलब्ध नाही: लाइव्ह स्रोत मिळाले नाहीत.", loading: "ताजे हवामान, पाऊस आणि भाव पाहत आहोत…", refresh: "पुन्हा पहा", noActions: "वाचता आलेल्या माहितीनुसार आज कोणतेही काम आवश्यक नाही.",
+  c: {
+    NEW_RISK: "नवीन: {day} रोजी {what} अपेक्षित", RISK_GONE: "आता अंदाज नाही: {day} रोजी {what}", RAIN_CHANGED: "पुढील 48 तासांचा पाऊस {old} mm वरून {new} mm झाला",
+    NEW_ALERT: "नवीन इशारा: {alert}", PRICE_CHANGED: "ताजा बाजारभाव {pct} % बदलला ({old} वरून {new} रुपये/क्विंटल)", SIGNAL_CHANGED: "भावाचा संकेत {old} वरून {new} झाला",
+    SPRAY_WINDOW_LOST: "या आठवड्याच्या अंदाजातून फवारणीचे सुरक्षित दिवस गेले", SPRAY_WINDOW_OPENED: "फवारणीचे सुरक्षित दिवस दिसले: या आठवड्यात {days} दिवस",
+  },
+  ask: [["📅", "calendar", "कधी पेरावे आणि कधी काढणी?"], ["🏪", "market", "जवळ कोणता बाजार सर्वात जास्त भाव देतो?"], ["🧴", "spray", "या आठवड्यात फवारणीची सर्वोत्तम वेळ कोणती?"], ["💧", "irrigation", "या आठवड्यात सिंचन करावे का?"]],
+  askLabel: { calendar: "पीक कॅलेंडर", market: "सर्वोत्तम बाजार", spray: "फवारणीचे तास", irrigation: "सिंचन" },
+  sig: { HOLD: "थांबा", SELL_NOW: "आता विका", NEUTRAL: "स्पष्ट संकेत नाही", INSUFFICIENT_DATA: "माहिती कमी" },
+};
+
+const TABLES = { en, hi, mr };
+export const planWords = (lang) => ({ ...en, ...(TABLES[lang] || {}), askLabel: { ...en.askLabel, ...(TABLES[lang]?.askLabel || {}) }, c: { ...en.c, ...(TABLES[lang]?.c || {}) }, sig: { ...en.sig, ...(TABLES[lang]?.sig || {}) }, checks: { ...en.checks, ...(TABLES[lang]?.checks || {}) }, dir: { ...en.dir, ...(TABLES[lang]?.dir || {}) } });
+
+/** One action as a sentence in the farmer's language (backend English title when no template exists, e.g. cited crop rules). */
+export function actionText(a, lang, t) {
+  const w = planWords(lang);
+  const tpl = w[a.code];
+  if (!tpl || !a.params || typeof tpl !== "string") return a.title;
+  const hrs = typeof a.params.hours === "string" && /^\d{4}-\d{2}-\d{2} /.test(a.params.hours) ? `${day(a.params.hours.slice(0, 10), lang)} ${a.params.hours.slice(11)}` : a.params.hours;
+  const p = { ...a.params, crop: cropLabel(lang, a.params.crop), hours: hrs, days: Array.isArray(a.params.days) ? a.params.days.map((d) => day(d, lang)).join(", ") : a.params.days, what: t.flags[a.code] || a.code, day: a.params.day ? day(a.params.day, lang) : "", dir: w.dir[a.params.dir] || a.params.dir };
+  const out = fill(tpl, p);
+  return p.hours ? out : out.replace(/[.।] [^.।]*: $/, "");
+}
+
+export function changeText(c, lang, t) {
+  const w = planWords(lang);
+  const tpl = w.c[c.code];
+  if (!tpl) return c.code;
+  const p = { ...c.params, what: t.flags[c.params.flag] || c.params.flag, day: c.params.day ? day(c.params.day, lang) : "", alert: t.alerts[c.params.alert] || c.params.alert, old: c.params.old, new: c.params.new };
+  if (c.code === "SIGNAL_CHANGED") { p.old = w.sig[c.params.old] || c.params.old; p.new = w.sig[c.params.new] || c.params.new; }
+  return fill(tpl, p);
+}
