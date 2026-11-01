@@ -1,0 +1,43 @@
+# Render blueprint: one container serving the API and the built UI. Secret values are entered in the Render dashboard, never here.
+# Note: the free plan sleeps after about 15 minutes without a request and has no persistent disk. The Telegram bot and its watcher only
+# run while the service is awake, so ping /api/health every 10 minutes (any free uptime monitor) or use a paid plan if the bot must stay on.
+services:
+  - type: web
+    name: kisaanmitra
+    runtime: docker
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /api/health
+    envVars:
+      - key: LLM_API_KEY
+        sync: false
+      - key: LLM_API_KEY2
+        sync: false
+      - key: LLM_API_KEY3
+        sync: false
+      - key: LLM_BASE_URL
+        value: https://api.groq.com/openai/v1
+      - key: LLM_FAST_MODEL
+        value: openai/gpt-oss-120b
+      - key: STT_MODEL
+        value: whisper-large-v3-turbo
+      - key: FALLBACK_API_KEY
+        sync: false
+      - key: FALLBACK_BASE_URL
+        value: https://openrouter.ai/api/v1
+      - key: FALLBACK_MODEL
+        value: openrouter/free
+      - key: FALLBACK2_API_KEY
+        sync: false
+      - key: FALLBACK2_BASE_URL
+        value: https://generativelanguage.googleapis.com/v1beta/openai/
+      - key: FALLBACK2_MODEL
+        value: gemini-3.1-flash-lite,gemini-3.5-flash
+      - key: DATA_GOV_API_KEY
+        sync: false
+      - key: MANDI_FILTER_STYLE
+        value: lower
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: WARM_PLACES
+        value: Nashik, Maharashtra|Onion; Ludhiana, Punjab|Wheat
