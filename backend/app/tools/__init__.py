@@ -30,7 +30,10 @@ _HOST = re.compile(r"\b(?:[a-z0-9-]+\.)+(?:com|org|in|net|gov)\b", re.I)
 
 
 def _source_name(host: str) -> str:
-    return _SOURCE_NAMES.get(host.lower(), "the live source")
+    host = host.lower()
+    if host.endswith(".workers.dev"):  # the optional mandi proxy still stands for data.gov.in
+        return "data.gov.in Agmarknet"
+    return _SOURCE_NAMES.get(host, "the live source")
 
 
 def safe_failure_text(message: str) -> str:

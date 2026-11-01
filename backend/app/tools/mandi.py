@@ -38,6 +38,11 @@ from app.tools.weather import get_weather
 
 log = logging.getLogger("tool.mandi")
 API = "https://api.data.gov.in/resource/{rid}"
+
+
+def _api(rid: str) -> str:
+    base = get_settings().mandi_base_url.strip().rstrip("/")
+    return f"{base}/resource/{rid}" if base else API.format(rid=rid)
 PAGE, MAX_PAGES = 500, 4  # per-call limit and a cap on pages: a state-level query is far below 2000 rows
 HISTORY_TTL_S = 3600  # new days arrive at most daily, and every cache miss spends rate-limited quota
 HISTORY_PAGES = 2  # 500 rows is about a week for a busy crop in a big state
@@ -167,7 +172,7 @@ def _fetch_records(state: str, commodity: str, key: str, rid: str, style: str, t
         got: list[dict] = []
         for page in range(MAX_PAGES):
             params = {"api-key": key, "format": "json", "limit": PAGE, "offset": page * PAGE, f"filters[{names[0]}]": state, f"filters[{names[1]}]": commodity}
-            f = get_json(API.format(rid=rid), params, ttl=get_settings().cache_ttl_s * 2 if ttl is None else ttl)
+            f = get_json(_api(rid), params, ttl=get_settings().cache_ttl_s * 2 if ttl is None else ttl)
             last = f
             data = f.data if isinstance(f.data, dict) else {}
             batch = [_norm(r) for r in (data.get("records") or [])]
@@ -196,7 +201,7 @@ def _fetch_history(state: str, commodity: str, key: str, rid: str, days: int, tt
         f = None
         for attempt in range(2):  # the shared free API drops the odd request; losing the history silently loses the trend
             try:
-                f = get_json(API.format(rid=rid), params, ttl=ttl, timeout=HISTORY_TIMEOUT_S)
+                f = get_json(_api(rid), params, ttl=ttl, timeout=HISTORY_TIMEOUT_S)
                 break
             except Exception as e:
                 log.warning("price history unavailable (attempt %d): %s", attempt + 1, type(e).__name__)
