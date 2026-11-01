@@ -74,7 +74,7 @@ SOFT_VALIDATORS: list[Validator] = [
     forbid_patterns({
         r"[\u0400-\u04ff\u0370-\u03ff\u0590-\u06ff\u0e00-\u0e7f\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]": "Contains a word in a foreign script (for example Russian or Chinese). Use only the farmer's language and plain digits.",
         r"\b(?-i:(?=[A-Za-z_]*[a-z]))[A-Za-z]+(?:_[A-Za-z]+)+\b": "Prints an internal rule label (words joined by underscores). Say it in plain words in the farmer's language.",
-        r"[\u3010\u3011\u300c\u300d]|\((?:[^()]*\b)?(?:code|decision|market position|highest markets|water balance|risk flags?|crop fit)\s*(?:code)?[,)]": "Names an internal part of the system as a source (for example 'Market Position code' or 'DECISION'). Name only the data source, such as Open-Meteo or Agmarknet, and its date.",
+        r"[\u3010\u3011\u300c\u300d]|\((?:[^()]*\b)?(?:code|decision|market position|highest markets|water balance|risk flags?|crop fit)\s*(?:code)?[,)]|\([^()]*कोड[^()]*\)|(?:स्रोत|स्रोतांत)\s*[:：]?\s*कोड": "Names an internal part of the system as a source (for example 'Market Position code' or 'DECISION'). Name only the data source, such as Open-Meteo or Agmarknet, and its date.",
     }),
     forbid_patterns({
         r"[0-9][\u0966-\u096f]|[\u0966-\u096f][0-9]": "Mixes Devanagari and ordinary digits inside one number (for example 202\u096c). Write every number with ordinary digits only.",
