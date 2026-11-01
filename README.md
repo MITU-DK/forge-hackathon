@@ -221,7 +221,7 @@ Read the latency with care: in this run 28 of 30 answers carried the degraded ba
 This repository was re-created on 1 Nov 2026 with one commit per file, so `git log` shows the final files, not the order in which the work happened. The pre-event starter is the generic part in the left column; everything in the right column was written during the event.
 
 ## Team
-MITU KUMAR ([@MITU-DK](https://github.com/MITU-DK))
+MITU KUMAR ([@MITU-DK](https://github.com/MITU-DK)) and MANISH SHORYAN
 
 ## License
 [MIT](LICENSE)
