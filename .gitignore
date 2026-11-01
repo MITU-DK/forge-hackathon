@@ -1,0 +1,36 @@
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+.venv/
+venv/
+node_modules/
+frontend/dist/
+.pytest_cache/
+.ruff_cache/
+qdrant_storage/
+.DS_Store
+.idea/
+.vscode/
+# large binaries never go in git
+*.pt
+*.h5
+*.keras
+*.onnx
+*.pkl
+*.safetensors
+*.gguf
+*.mp4
+*.mov
+runs/
+
+# downloaded dataset dumps (large, real data; never commit)
+9ef84268-*.json
+*.csv
+
+# the crop-limits table (3.7 KB, rebuilt from FAO EcoCrop by scripts/build_ecocrop_subset.py) is code-adjacent data the app needs at runtime
+!backend/data/ecocrop_subset.csv
+
+# persistent live-data cache (regenerated at runtime)
+backend/data/cache/
