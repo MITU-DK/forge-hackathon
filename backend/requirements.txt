@@ -1,0 +1,12 @@
+fastapi>=0.110
+uvicorn[standard]>=0.27
+pydantic>=2.6
+pydantic-settings>=2.2
+python-dotenv>=1.0
+python-multipart>=0.0.9
+httpx>=0.27
+qdrant-client>=1.9
+numpy>=1.26
+# optional, better embeddings (downloads a model on first run):
+# fastembed>=0.3
+pytest>=8.0
