@@ -16,6 +16,7 @@ class Settings(BaseSettings):
 
     # --- Live data sources (NO dummy data: every value must come from a live source) --------------------
     data_gov_api_key: str = ""  # free key from data.gov.in (mandi prices)
+    mandi_base_url: str = ""  # optional proxy that forwards /resource/<id> to api.data.gov.in (for hosts whose IPs data.gov.in blocks)
     mandi_resource_id: str = "9ef84268-d588-465a-a308-a864a43d0070"  # confirm with `make check-live`
     mandi_history_resource_id: str = "35985678-0d79-46b4-9ed6-6f13308a1d24"  # dated prices; the resource above is today-only
     mandi_filter_style: str = "auto"  # auto | lower | title  (data.gov.in field-name case)
